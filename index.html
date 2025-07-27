@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escaneo Facial</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Open+Sans&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/escaneo.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
+<!-- Librería face-api.js para navegador -->
+  <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+</head>
+<body>
+    <div class="cabecera">
+    <div class="logo">
+      <img src="img/logo.jpg" width="40%">
+    </div>
+    <div class="menu">
+      <div class="menus">
+        <a href="index.html">Inicio</a>
+        <a href="productos.html">Productos</a>
+        <a href="escaneo.html" class="active">Escaneo Facial</a>
+        <a href="consejos.html">Videos y Consejos</a>
+      </div>
+    </div>
+  </div>
+
+  
+
+<header>Escaneo Facial - Consejos Personalizados</header>
+
+  <main>
+    <p>Sube una foto clara de tu rostro para detectar tu tono de piel y obtener sugerencias personalizadas:</p>
+    <input type="file" accept="image/*" id="imageUpload" />
+    <img id="preview" src="" alt="Previsualización" />
+    <canvas id="overlay"></canvas>
+    <div id="recommendations"></div>
+  </main>
+
+  <script>
+    const tones = [
+      {
+        name: "Claro frío",
+        base: "Porcelana rosada o beige frío",
+        sombra: "Champagne, gris claro, rosa pastel",
+        labial: "Rosa bebé, coral claro"
+      },
+      {
+        name: "Claro cálido",
+        base: "Beige dorado o arena clara",
+        sombra: "Durazno, dorado claro",
+        labial: "Melocotón, coral"
+      },
+      {
+        name: "Medio neutro",
+        base: "Beige neutro o oliva claro",
+        sombra: "Bronce, marrón suave, terracota",
+        labial: "Nude, rojo clásico"
+      },
+      {
+        name: "Caramelo",
+        base: "Caramelo o miel cálido",
+        sombra: "Cobre, dorado intenso, vino",
+        labial: "Terracota, rojo quemado"
+      },
+      {
+        name: "Oscuro frío",
+        base: "Espresso, ciruela o chocolate",
+        sombra: "Vino, berenjena, gris profundo",
+        labial: "Borgoña, morado oscuro"
+      },
+      {
+        name: "Oscuro cálido",
+        base: "Cacao con subtono dorado",
+        sombra: "Bronce profundo, naranja quemado",
+        labial: "Rojo profundo, marrón cálido"
+      }
+    ];
+
+    const imageUpload = document.getElementById('imageUpload');
+    const preview = document.getElementById('preview');
+    const recommendations = document.getElementById('recommendations');
+
+    window.addEventListener('load', async () => {
+      await faceapi.nets.tinyFaceDetector.loadFromUri('./models');
+      console.log('Modelos cargados');
+    });
+
+    imageUpload.addEventListener('change', async () => {
+      const file = imageUpload.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async () => {
+        preview.src = reader.result;
+
+        const img = new Image();
+        img.src = reader.result;
+
+        img.onload = async () => {
+          const detection = await faceapi.detectSingleFace(img, new faceapi.TinyFaceDetectorOptions());
+
+          if (detection) {
+            const tone = tones[Math.floor(Math.random() * tones.length)];
+            recommendations.innerHTML = `
+              <h3>Tono Detectado: ${tone.name}</h3>
+              <p><strong>Base:</strong> ${tone.base}</p>
+              <p><strong>Sombra:</strong> ${tone.sombra}</p>
+              <p><strong>Labial:</strong> ${tone.labial}</p>
+            `;
+          } else {
+            recommendations.innerHTML = `<p style="color:red;">No se detectó un rostro. Intenta con otra imagen.</p>`;
+          }
+        };
+      };
+      reader.readAsDataURL(file);
+    });
+  </script>
+  </body>
+</html>
