@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Escaneo Facial</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Open+Sans&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="css/escaneo.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
 <!-- Librería face-api.js para navegador -->
   <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
@@ -13,7 +13,7 @@
 <body>
     <div class="cabecera">
     <div class="logo">
-      <img src="img/logo.jpg" width="40%">
+      <img src="img/logo1.jpg" width="40%">
     </div>
     <div class="menu">
       <div class="menus">
@@ -28,7 +28,6 @@
   
 
 <header>Escaneo Facial - Consejos Personalizados</header>
-
   <main>
     <p>Sube una foto clara de tu rostro para detectar tu tono de piel y obtener sugerencias personalizadas:</p>
     <input type="file" accept="image/*" id="imageUpload" />
@@ -38,83 +37,147 @@
   </main>
 
   <script>
-    const tones = [
-      {
-        name: "Claro frío",
-        base: "Porcelana rosada o beige frío",
-        sombra: "Champagne, gris claro, rosa pastel",
-        labial: "Rosa bebé, coral claro"
-      },
-      {
-        name: "Claro cálido",
-        base: "Beige dorado o arena clara",
-        sombra: "Durazno, dorado claro",
-        labial: "Melocotón, coral"
-      },
-      {
-        name: "Medio neutro",
-        base: "Beige neutro o oliva claro",
-        sombra: "Bronce, marrón suave, terracota",
-        labial: "Nude, rojo clásico"
-      },
-      {
-        name: "Caramelo",
-        base: "Caramelo o miel cálido",
-        sombra: "Cobre, dorado intenso, vino",
-        labial: "Terracota, rojo quemado"
-      },
-      {
-        name: "Oscuro frío",
-        base: "Espresso, ciruela o chocolate",
-        sombra: "Vino, berenjena, gris profundo",
-        labial: "Borgoña, morado oscuro"
-      },
-      {
-        name: "Oscuro cálido",
-        base: "Cacao con subtono dorado",
-        sombra: "Bronce profundo, naranja quemado",
-        labial: "Rojo profundo, marrón cálido"
-      }
-    ];
+  const tones = [
+    // 🌸 TONOS CLAROS
+    {
+      name: "Rosa Porcelana",
+      tono: "Claro",
+      subtono: "Frío",
+      descripcion: "Piel muy clara con matiz rosado",
+      base: "Porcelana fría o rosada",
+      sombra: "Gris perla, lavanda suave",
+      delineador: "Gris claro, azul grisáceo",
+      labial: "Rosa bebé, fucsia suave"
+    },
+    {
+      name: "Vainilla Suave",
+      tono: "Claro",
+      subtono: "Cálido",
+      descripcion: "Claro con matiz dorado o durazno",
+      base: "Beige claro cálido o durazno claro",
+      sombra: "Dorado suave, coral claro",
+      delineador: "Bronce claro, marrón suave",
+      labial: "Melocotón, coral"
+    },
+    {
+      name: "Marfil Neutro",
+      tono: "Claro",
+      subtono: "Neutro",
+      descripcion: "Equilibrio entre rosado y dorado",
+      base: "Marfil neutro",
+      sombra: "Champagne, beige rosado",
+      delineador: "Marrón medio",
+      labial: "Nude rosado, rosa palo"
+    },
 
-    const imageUpload = document.getElementById('imageUpload');
-    const preview = document.getElementById('preview');
-    const recommendations = document.getElementById('recommendations');
+    // 🌤️ TONOS MEDIOS
+    {
+      name: "Beige Rosado",
+      tono: "Medio",
+      subtono: "Frío",
+      descripcion: "Beige medio con fondo rosa",
+      base: "Beige rosado medio",
+      sombra: "Malva, taupe, rosa viejo",
+      delineador: "Vino suave, gris carbón",
+      labial: "Rosa frambuesa, ciruela clara"
+    },
+    {
+      name: "Oliva Dorada",
+      tono: "Medio",
+      subtono: "Cálido",
+      descripcion: "Bronceado medio con subtono cálido",
+      base: "Beige oliva o dorado medio",
+      sombra: "Terracota, bronce, durazno",
+      delineador: "Marrón dorado, cobre",
+      labial: "Rojo cálido, coral oscuro"
+    },
+    {
+      name: "Arena Natural",
+      tono: "Medio",
+      subtono: "Neutro",
+      descripcion: "Tono bronceado equilibrado",
+      base: "Arena o beige medio neutro",
+      sombra: "Champagne, bronce neutro",
+      delineador: "Marrón clásico, negro suave",
+      labial: "Rosa quemado, nude tostado"
+    },
 
-    window.addEventListener('load', async () => {
-      await faceapi.nets.tinyFaceDetector.loadFromUri('./models');
-      console.log('Modelos cargados');
-    });
+    // 🌅 TONOS OSCUROS
+    {
+      name: "Cacao Dorado",
+      tono: "Oscuro",
+      subtono: "Cálido",
+      descripcion: "Piel oscura con matiz miel o dorado",
+      base: "Cacao cálido o caramelo profundo",
+      sombra: "Cobre, naranja quemado, bronce intenso",
+      delineador: "Café oscuro, bronce profundo",
+      labial: "Rojo ladrillo, marrón rojizo"
+    },
+    {
+      name: "Ebano Frío",
+      tono: "Oscuro",
+      subtono: "Frío",
+      descripcion: "Piel muy oscura con fondo azulado",
+      base: "Ébano frío o ciruela profunda",
+      sombra: "Berenjena, gris humo, vino oscuro",
+      delineador: "Negro, gris oscuro",
+      labial: "Borgoña, morado oscuro"
+    },
+    {
+      name: "Chocolate Neutro",
+      tono: "Oscuro",
+      subtono: "Neutro",
+      descripcion: "Oscura con balance entre cálido y frío",
+      base: "Chocolate neutro o espresso",
+      sombra: "Marrón oscuro, oro viejo",
+      delineador: "Negro suave, marrón profundo",
+      labial: "Rojo vino, nude oscuro"
+    }
+  ];
 
-    imageUpload.addEventListener('change', async () => {
-      const file = imageUpload.files[0];
-      if (!file) return;
+  const imageUpload = document.getElementById('imageUpload');
+  const preview = document.getElementById('preview');
+  const recommendations = document.getElementById('recommendations');
 
-      const reader = new FileReader();
-      reader.onload = async () => {
-        preview.src = reader.result;
+  window.addEventListener('load', async () => {
+    await faceapi.nets.tinyFaceDetector.loadFromUri('./models');
+    console.log('Modelos cargados');
+  });
 
-        const img = new Image();
-        img.src = reader.result;
+  imageUpload.addEventListener('change', async () => {
+    const file = imageUpload.files[0];
+    if (!file) return;
 
-        img.onload = async () => {
-          const detection = await faceapi.detectSingleFace(img, new faceapi.TinyFaceDetectorOptions());
+    const reader = new FileReader();
+    reader.onload = async () => {
+      preview.src = reader.result;
 
-          if (detection) {
-            const tone = tones[Math.floor(Math.random() * tones.length)];
-            recommendations.innerHTML = `
-              <h3>Tono Detectado: ${tone.name}</h3>
-              <p><strong>Base:</strong> ${tone.base}</p>
-              <p><strong>Sombra:</strong> ${tone.sombra}</p>
-              <p><strong>Labial:</strong> ${tone.labial}</p>
-            `;
-          } else {
-            recommendations.innerHTML = `<p style="color:red;">No se detectó un rostro. Intenta con otra imagen.</p>`;
-          }
-        };
+      const img = new Image();
+      img.src = reader.result;
+
+      img.onload = async () => {
+        const detection = await faceapi.detectSingleFace(img, new faceapi.TinyFaceDetectorOptions());
+
+        if (detection) {
+          const tone = tones[Math.floor(Math.random() * tones.length)];
+          recommendations.innerHTML = `
+            <h3>Tono Detectado: ${tone.name}</h3>
+            <p><strong>Tono:</strong> ${tone.tono} | <strong>Subtono:</strong> ${tone.subtono}</p>
+            <p><em>${tone.descripcion}</em></p>
+            <hr>
+            <p><strong>Base recomendada:</strong> ${tone.base}</p>
+            <p><strong>Sombras sugeridas:</strong> ${tone.sombra}</p>
+            <p><strong>Delineador ideal:</strong> ${tone.delineador}</p>
+            <p><strong>Labial recomendado:</strong> ${tone.labial}</p>
+          `;
+        } else {
+          recommendations.innerHTML = `<p style="color:red;">No se detectó un rostro. Intenta con otra imagen.</p>`;
+        }
       };
-      reader.readAsDataURL(file);
-    });
-  </script>
+    };
+    reader.readAsDataURL(file);
+  });
+</script>
+
   </body>
 </html>
